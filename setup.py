@@ -11,11 +11,11 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=6.0', ]
+requirements = ['coverage==4.5.1', 'mock==2.0.0', 'mysql-connector-python==8.0.11', 'nose==1.3.7', 'Pillow==5.1.0', ]
 
-setup_requirements = ['pytest-runner', ]
-
-test_requirements = ['pytest', ]
+# setup_requirements = ['pytest-runner', ]
+#
+# test_requirements = ['pytest', ]
 
 setup(
     author="Sergii Iukhymchuk",
@@ -25,17 +25,17 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
+        # "Programming Language :: Python :: 2",
+        # 'Programming Language :: Python :: 2.7',
+        # 'Programming Language :: Python :: 3',
+        # 'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        # 'Programming Language :: Python :: 3.6',
     ],
-    description="Python Boilerplate contains all the boilerplate you need to create a Python package.",
+    description="GUI to manage such staff information as Time Off, Vacation, Salary and Commission changing. This data is recorded to mysql DB.",
     entry_points={
-        'console_scripts': [
-            'staff_info=staff_info.cli:main',
+        'gui_scripts': [
+            'staff_info=staff_info:__main__',
         ],
     },
     install_requires=requirements,
@@ -44,10 +44,10 @@ setup(
     include_package_data=True,
     keywords='staff_info',
     name='staff_info',
-    packages=find_packages(include=['staff_info']),
-    setup_requires=setup_requirements,
+    packages=find_packages(exclude=['*.db_credentials']),
+    # setup_requires=setup_requirements,
     test_suite='tests',
-    tests_require=test_requirements,
+    # tests_require=test_requirements,
     url='https://github.com/sergii.iukhymchuk83@gmail.com/staff_info',
     version='0.1.0',
     zip_safe=False,
