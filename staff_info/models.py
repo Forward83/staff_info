@@ -8,97 +8,12 @@ Created on Sun Mar 19 12:40:12 2017
 from collections import OrderedDict
 from datetime import datetime
 
-from staff_info.settings import connector
+from settings import connector
 
 
 ######################################################################################################
 # Loading initial data and combining it to list                                                     #
 ######################################################################################################
-
-class Manager:
-
-
-    def __init__(self):
-        self.connector = connector
-        pass
-
-    def _create_objects(self, model, **kwargs):
-        """
-        Base method for object creation. It
-        """
-
-        # def _create_parameters(model, **kwargs):
-        #     """
-        #     Create sql parameters, placeholders for model. String is forming from model parameters.
-        #     Values is exctracted from kwargs parameters.
-        #     """
-        #     fields = model.fields
-        #     pk, flag = model.primary_key[0], model.primary_key[1]
-        #     obj = model(**kwargs)
-        #     column_list = ','.join(fields)
-        #     values = []
-        #     if flag['auto_increment']:
-        #         kwargs[pk] = 'Null'
-        #     [values.append(obj[field]) for field in fields]
-        #     assert len(model.fields) == len(values)
-        #     placeholders = ['%s' for _ in values]
-        #     placeholders_str = ', '.join(placeholders)
-        #     sql = "INSERT INTO {} ({}) VALUES ({});".format(model.table_name, column_list,
-        #                                                     placeholders_str)
-        #     return sql, values
-        #
-        # sql, values = [], []
-        # sql[0], values[0] = _create_parameters(model, **kwargs) # sql for primary object
-        # sql[1], values[1] = "SET @last_id_in_model = LAST_INSERT_ID();", []
-        # # related_model = model.
-        #
-        #
-        # try:
-        #     connector.execute_sql(sql, *values)
-        #     pk_value = connector.last_row_id
-        # except:
-        #     print('Something wrong')
-        # else:
-        #     obj[pk] = pk_value
-        # return obj
-
-    def create_object(self, model, **kwargs):
-        return self._create_objects(model, **kwargs)
-
-    def create_related_object(self, obj, related_model, **kwargs):
-        # Add foreign key to dict parameters
-        fk = obj.primary_key[0]
-        kwargs[fk] = obj[fk]
-        related_obj = related_model(**kwargs)
-        self._create_objects(related_model, **related_obj.__dict__)
-
-    def select_object(self, model, **conditions):
-        pass
-
-    def get_all(self, model):
-        sql = "SELECT * FROM {};".format(model.table_name)
-        result = connector.execute_sql(sql, change=False)
-        # print(result)
-        for item in result:
-            e_dict = {}
-            for k, v in zip(model.fields, item):
-                e_dict[k] = v
-            model(**e_dict)
-        return model.objects
-
-    def select_related_object(self, model, related_model, **conditions):
-        pass
-
-    def get_related_last(self, obj, related_model):
-        pk = obj.primary_key[0]
-        related_table = related_model.table_name
-        select_row = 'SELECT * FROM {}'.format(related_model.table_name)
-        where_condition = ' WHERE {}={} and id in '.format(pk, obj[pk])
-        inner_select = '(SELECT MAX(id) FROM {} GROUP BY {})'.format(related_table, pk)
-        sql = select_row + where_condition + inner_select
-        result = connector.execute_sql(sql, change=False)
-        return result
-
 
 class Employee:
     table_name = 'employee'
@@ -244,8 +159,8 @@ class Commission(AttributeTable):
                           })
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
         self.year = datetime.now().year
+        super().__init__(**kwargs)
 
 
 class Result:
@@ -259,6 +174,24 @@ class Result:
                           'plan_revenue': ('Planning Revenue', 15),
                           'plan_margin': ('Planning Margin', 15),
                           })
+    objects = []
+
+    def __init__(self, **kwargs):
+        """
+        Object initialization according main table (with primary key)
+        """
+        for item in self.fields:
+            self.__dict__[item] = kwargs.get(item, None)
+        if not self[Result.primary_key[0]]:
+            self.year = datetime.now().year
+        Result.objects.append(self)
+
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+
 
 model_list = [Employee, Position, Timeoff, InformalVacation, Vacation, Salary, Commission, Result]
 if __name__ == '__main__':

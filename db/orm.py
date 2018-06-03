@@ -1,6 +1,6 @@
+from settings import connector
 from staff_info.models import model_list
 
-from staff_info.settings import connector
 
 class Manager:
     """

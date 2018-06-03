@@ -4,7 +4,7 @@ from tkinter.messagebox import showwarning
 
 from db.orm import Manager
 from staff_info.gui_exceptions import TooManyItemsChecked
-from .models import Employee
+from .models import Employee, Result
 from .views import GuiBuilder, ToplevelBuilder, gui_table_fields, gui_labels, add_employee_labels
 
 
@@ -81,6 +81,8 @@ class Callbacks:
         d = {}
         for k, v in toplevel.ent_dict.items():
             d[k] = v.get()
+        if not Result.objects:
+            Manager(Result).create_object()
         manager.create_object(**d)
         Employee.objects = []
         run(root)
@@ -149,9 +151,9 @@ def run(root):
     director.load_init_data(Employee)
 
 manager = Manager(Employee)
+root = tkinter.Tk()
 
 if __name__ == '__main__':
-    root = tkinter.Tk()
     run(root)
     root.mainloop()
 

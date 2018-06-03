@@ -1,8 +1,7 @@
 import tkinter
-from staff_info.controller import run
+from staff_info.controller import run, root
 
 def main():
-    root = tkinter.Tk()
     run(root)
     root.mainloop()
 

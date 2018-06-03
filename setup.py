@@ -35,7 +35,7 @@ setup(
     description="GUI to manage such staff information as Time Off, Vacation, Salary and Commission changing. This data is recorded to mysql DB.",
     entry_points={
         'gui_scripts': [
-            'staff_info=staff_info:__main__',
+            'launcher=staff_info:__main__',
         ],
     },
     install_requires=requirements,
@@ -49,6 +49,6 @@ setup(
     test_suite='tests',
     # tests_require=test_requirements,
     url='https://github.com/sergii.iukhymchuk83@gmail.com/staff_info',
-    version='0.1.0',
+    version='0.1.2',
     zip_safe=False,
 )

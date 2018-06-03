@@ -20,11 +20,13 @@ class MySQLConnector:
                 print("Wrong username/passwrod credential")
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
                 print("Database does not exist")
+            elif err.errno == errorcode.ER_DBACCESS_DENIED_ERROR:
+                print("User has no access to DB")
             else:
                 print(err)
         return cnx
 
-    def execute_sql(self, sql, *params, change=True):
+    def execute_sql(self, sql, *params, change=True, multi=False):
         """
         Execute raw sql with provided parameters
         :param sql: raw sql string;
@@ -38,7 +40,7 @@ class MySQLConnector:
         result = None
         print(sql, params)
         try:
-            result = cursor.execute(sql, params)
+            result = cursor.execute(sql, params, multi)
         except mysql.connector.errors.DataError:
             showerror('Type error', 'Incorrect data type')
         else:
